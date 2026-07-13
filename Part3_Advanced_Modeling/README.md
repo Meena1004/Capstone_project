@@ -19,25 +19,49 @@ The dataset contains enough records and many features, so it is suitable for com
                                              - Recall
                                              - F1-score
                                              - ROC-AUC
-  This model helped me compare the performance of more advanced ensemble models.
-**2.Random Forest:**
+  The default Decision Tree gave very high accuracy but lower testing accuracy.
+  This shows overfitting because the model learns the training data too closely.
+  Decision Tree are called **high variance models** because a small change in training data can produce a different tree.
+**2.Controlled Decision Tree:**
+  Then i trained another Decision Tree using max_depth=5 and min_samples_split=20.
+  The max_depth parameter limits hoe deep the tree can grow.
+  The min_samples_split parameter prevents splitting very small groups of samples.
+  These settings reduce overfitting and improve the model's ability to generalize on unseen data.
+**3.Gini and Entropy:**
+  I compared Decision Trees using Gini and Entropy criteria.
+  A node with Gini value equal to 0 means every sample belongs to only one class, so the node is completely pure.
+**4.Random Forest:**
   After the Decision Tree, I trained a Random Forest classifier.
   Random Forest combines many Decision Trees instead of using only one tree.
   This usuallly gives - Better accuracy
                       - Less overfitting
                       - More stable predictions
-  I evaluate it using the same performance metrics.
-**3.Bagging Classifier:**
-  Next i trained a Bagging Classifier.
-  Bagging creates multiple models using different random samples of the training data.
-  The final prediction comes from combining all individual models.
-**  This helps reduce variance and improve prediction stability
-4.Hyperparameter Tuning:**
+  I also calculated feature importance.
+  Random Forest calculates feature importance by measuring how much each feature reduces Gini impurity across all trees.
+  This is different from Linear Regression coefficients because feature importance shows contribution to prediction instead of showing positive or negative relationships.
+**5.Bagging:**
+  Random Forest uses the Bagging technique.
+  Bagging creates many bootstrap samples from the training dataset.
+  Each tree is trained using a different random sample.
+  During each split only a random subset of features is considered.
+  Finally all tree predictions are combined to produce the final prediction.
+  This helps reduce variance and improve prediction stability.
+**6.Gradient Boosting:**
+  I also trained a Gradient Boosting classifire.
+  This model builds trees one after another.
+  Each new tree tries to correct the mistakes made by the previous trees.
+  I compared its performance with the other models.
+**7.Hyperparameter Tuning:**
   After training the models, i performed hyperparameter tuning using **GridSearchCV**
   Different parameter combinations were tested automatically.
   The best parameter combination was selected based on crosss-validation performance.
-  This helped improve the model without manually testing many values.
-**5.Cross Validation:**
+  The parameter grid contained  - 3 values for n_estimators
+                                - 3 values for max_depth
+                                - 2 values for min_samples_leaf
+  This means 18 different parameter combinations were tested.
+  Using 5-fold cross validation, a total of 90 model training runs were performed.
+  Grid search checks every possible parameter combination and usually finds the best model,but it requires more computation time than Randomized Search.
+**8.Cross Validation:**
   I used cross-validation to evaluate the model on multiple splits of the training data.
   Instead of checking performanace on only one train-test split, cross-validation gives a more reliable estimate of model performance.
   This makes the comparison between models more trustworthy.
@@ -48,19 +72,25 @@ The dataset contains enough records and many features, so it is suitable for com
              - Recall
              - F1-score
              - ROC-AUC     based on these results, i selected the best-performing model.
-**7.Machine Learning Pipeline:**
+  Random Forest gave one of the best overall performances  while maintaining good stability. 
+**10.Machine Learning Pipeline:**
   After selecting the best model, i created a complete Scikit-learn Pipeline.
   The pipeline combines preprocessing and model prediction into one workflow.
   Using a pipeline makes the project  - Easier to reuse
                                       - Easier to deploy
                                       - reduces preprocessing mistakes
                                       - keeps every prediction consistent
-**8.Saving the Best Model:**
+**11.Learning Curve:**
+  I trained the best pipeline using different training data sizes from 20% to 100%.
+  As the training data increased, the training AUC decreased slightly while the test AUC improved.
+  This shows the model became less overfitted.
+  the test performance became almost stable near the end, showing that the model is close to its maximum performance.
+**12.Saving the Best Model:**
   The final trained model was saved using joblib.
   Saved file as : **"best_model.pkl"**
   Saving the model means i do not need to train it again every time.
   The saved model can be loaded directly for prediction.
-**9.Reloading the model:**
+**13.Reloading the model:**
   After saving, i loaded the model again using Joblib.
   I tested predictions using the loaded model.
   The loaded model produced the same predicitions as the original trained model.
